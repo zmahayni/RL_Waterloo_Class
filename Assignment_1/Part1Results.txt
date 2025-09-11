@@ -1,0 +1,27 @@
+=== Value Iteration ===
+Policy: [3 3 1 1 1 3 1 1 1 1 1 2 3 3 0 0 0]
+Value Function: [ 57.40981959  62.35501737  67.77963975  64.96284383  58.62088109
+  62.31802989  74.58594186  70.20153227  63.3314941    7.47046958
+  82.89054368  75.58836359  75.79654065  83.65711283 100.
+  72.869372     0.        ]
+Iterations: 21 Final epsilon: 0.004895425288879096
+
+=== Policy Iteration ===
+Policy: [3 3 1 1 1 3 1 1 1 1 1 2 3 3 0 0 0]
+Value Function: [ 57.41579164  62.35823345  67.78138742  64.96471086  58.62141068
+  62.31944032  74.58645751  70.2024099   63.33161821   7.47053089
+  82.89063387  75.58877302  75.79659742  83.65712755 100.
+  72.87012982   0.        ]
+Iterations: 5 Final epsilon: 0.004895425288879096
+
+=== Modified Policy Iteration ===
+Partial eval iters = 1: Iterations = 7
+Partial eval iters = 2: Iterations = 5
+Partial eval iters = 3: Iterations = 4
+Partial eval iters = 4: Iterations = 5
+Partial eval iters = 5: Iterations = 6
+Partial eval iters = 6: Iterations = 5
+Partial eval iters = 7: Iterations = 6
+Partial eval iters = 8: Iterations = 4
+Partial eval iters = 9: Iterations = 5
+Partial eval iters = 10: Iterations = 5
