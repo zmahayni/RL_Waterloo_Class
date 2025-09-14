@@ -58,13 +58,15 @@ class RL:
         # function is coded
         Q = initialQ.copy()
         policy = np.zeros(self.mdp.nStates,int)
-        episode_count = 0
+        episode_count = 1
         counts = defaultdict(int)
-        while episode_count < nEpisodes:
+        returns = np.zeros(nEpisodes, dtype=float)
+        while episode_count <= nEpisodes:
             s = s0
             steps = 0
-            doBoltzmann = False
             action = 0
+            G = 0.0
+            disc = 1.0
             while steps < nSteps:
                 probs = [epsilon, 1-epsilon]
                 doBoltzmann = np.random.choice([False, True], p = probs)
@@ -87,11 +89,18 @@ class RL:
                 counts[action,s] += 1
                 learning_rate = 1/counts[action,s]
                 Q[action,s] += learning_rate * (reward + self.mdp.discount * np.max(Q[:, next_state]) - Q[action,s])
+
+                G += disc * reward
+                disc *= self.mdp.discount
                 
                 s = next_state
                 steps += 1
+            
+            returns[episode_count-1] = G
             episode_count += 1
+
+
         
         policy = np.argmax(Q, axis=0).astype(int)
 
-        return [Q,policy]    
+        return [Q,policy, returns]    
