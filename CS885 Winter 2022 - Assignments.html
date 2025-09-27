@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta charset="UTF-8">
+    <title>CS885 Winter 2022 - Assignments</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet"
+      href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+  <body>
+    <div class="w3-sidebar w3-bar-block w3-collapse w3-card w3-animate-left" style="width:150px;" id="mySidebar">
+        <button class="w3-bar-item w3-button w3-large w3-hide-large" onclick="w3_close()">Close &times;</button>
+	<a href="index.html" class="w3-bar-item w3-button">Home</a> 
+	<a href="goals.html" class="w3-bar-item w3-button">Goals</a> 
+	<a href="textbook.html" class="w3-bar-item w3-button">Textbook</a> 
+	<a href="schedule.html" class="w3-bar-item w3-button">Schedule</a> 
+	<a href="assignments.html" class="w3-bar-item w3-button w3-teal">Assignments</a> 
+	<a href="critiques.html" class="w3-bar-item w3-button">Critiques</a> 
+	<a href="presentation.html" class="w3-bar-item w3-button">Presentation</a> 
+	<a href="project.html" class="w3-bar-item w3-button">Project</a> 
+	<a href="marks.html" class="w3-bar-item w3-button">Marks</a> 
+	<a href="policies.html" class="w3-bar-item w3-button">Policies</a>
+	<a href="https://cs.uwaterloo.ca/~ppoupart" class="w3-bar-item w3-button">Pascal's Homepage</a>
+    </div>
+
+    <div class="w3-main" style="margin-left:150px">
+      <div class="w3-teal"> 
+	<button class="w3-button w3-teal w3-xlarge w3-hide-large" onclick="w3_open()">&#9776;</button>
+        <div class="w3-container">
+          <h1>CS885 Winter 2022 - Reinforcement Learning</h1>
+        </div>
+      </div>
+      <div class="w3-container">
+	<p>There will be three assignments, each worth 10% of the final grade. Assignments are done individually (i.e., no team).  Each assignment will have a programming part to be done in Python.  Some assignments will make use of <a href="https://pytorch.org/">PyTorch</a>, <a href="https://www.tensorflow.org/">TensorFlow</a> and <a href="https://gym.openai.com/">OpenAI Gym</a>.  For GPU or TPU acceleration, feel free to use Google's <a href="https://colab.research.google.com">Colaboratory environment</a>.  This is a free cloud service where you can run Python code (including <a href="https://www.tensorflow.org/">TensorFlow</a> and <a href="https://pytorch.org/">PyTorch</a>, which are pre-installed) with GPU or TPU acceleration.  A virtual machine with two CPUs and one GPU or TPU will run up to 12 hours after which it must be restarted. The following steps are recommended:
+	<ul>
+	  <li>Create a Python notebook in <a href="https://colab.research.google.com">Google Colab</a></li>
+	  <li>Click on "edit", then "notebook settings" and select "None" (CPU), "GPU"  or "TPU" for hardware acceleration.</li>
+	</ul></p>
+
+	<p>The approximate out and due dates are:
+	  <ul>
+	    <li>A1: out Jan 10, due Jan 21 (11:59 pm)</li>
+	    <li>A2: out Jan 24, due Feb 4 (11:59 pm)</li>
+	    <li>A3: out Feb 7, due Feb 18 (11:59 pm)</li>
+	  </ul></p>
+	
+	<p><font color="red">Your assignment should be submitted electronically via LEARN.  You can make as many submissions as you wish.  Your last submission will be marked.  A late submission will incur a 2% penalty for every rounded up hour past the deadline.   For example, an assignment submitted 5 hours and 15 minutes late will receive a penalty of ceiling(5.25) * 2% = 12%.  Assignments submitted more than 50 hours late will not be marked.</font></p>
+
+	<h2>Assignment 1: out Jan 10, <b>due Jan 21 (11:59 pm)</b></h2>
+
+	<p>This assignment has three parts. <b>[10 points total]</b></p>
+
+	<h3>Part I [4 points]</h3>
+
+	<p>In the first part, you will program value iteration, policy iteration and modified policy iteration for Markov decision processes in Python.  More specifically, fill in the functions in the skeleton code of the file MDP.py.   The file TestMDP.py contains the simple MDP example from Lecture 2a Slides 13-14.  You can verify that your code compiles properly with TestMDP.py by running "python TestMDP.py".  Add print statements to this file to verify that the output of each function makes sense.</p>
+
+	<ul>
+	  <li>Skeleton code: <a href="assignments/asst1/MDP.py">MDP.py</a></li>
+	  <li>Simple MDP from Lecture 2a Slides 13-14 to test your code: <a href="assignments/asst1/TestMDP.py">TestMDP.py</a></li>
+	</ul>
+
+	<p><b>Submit the following material via LEARN:</b></p>
+	<ul>
+	  <li>Your Python code.</li>
+	  <li>Test your code with the maze problem described in <a href="assignments/asst1/TestMDPmaze.py">TestMDPmaze.py</a>.</li>  
+	  <ul>
+	    <li>Report the policy, value function and number of iterations needed by value iteration when using a tolerance of 0.01 and starting from a value function set to 0 for all states. <b>[1 point]</b></li>
+	    <li>Report the policy, value function and number of iterations needed by policy iteration to find an optimal policy when starting from the policy that chooses action 0 in all states. <b>[1 point]</b></li>
+	    <li>Report the number of iterations needed by modified policy iteration to converge when varying the number of iterations in partial policy evaluation from 1 to 10.  Use a tolerance of 0.01, start with the policy that chooses action 0 in all states and start with the value function that assigns 0 to all states. <b>[1 point]</b> Discuss the impact of the number of iterations in partial policy evaluation on the results and relate the results to value iteration and policy iteration. <b>[1 point]</b></li>
+	  </ul>
+	</ul>
+
+	<h3>Part II [3 points]</h3>
+
+	<p> In the second part, you will program the Q-learning algorithm in Python.  More specifically, fill in the functions in the skeleton code of the file RL.py.   This file requires the file MDP.py that you programmed for part I so make sure to include it in the same directory.  The file TestRL.py contains a simple RL problem to test your functions (i.e. the output of each function will be printed to the screen).   You can verify that your code compiles properly by running "python TestRL.py".</p>
+
+	<ul>
+	  <li>Skeleton code: <a href="assignments/asst1/RL.py">RL.py</a> (requires MDP.py from part I)</li>
+	  <li>Simple RL problem to test your code: <a href="assignments/asst1/TestRL.py">TestRL.py<a></li>
+	</ul>
+
+	<p><b>Submit the following material via LEARN:</b></p>
+	<ul>
+	  <li>Your Python code.</li>
+	  <li>Test your code with the maze problem described in <a href="assignments/asst1/TestRLmaze.py">TestRLmaze.py</a> (same maze problem as in Part I) <b>[1 point]</b>. Produce a graph where the x-axis indicates the episode # (from 0 to 200) and the y-axis indicates the average (based on 100 trials) of the cumulative discounted rewards per episode (100 steps).  The graph should contain 4 curves corresponding to the exploration probability epsilon=0.05, 0.1, 0.3 and 0.5 <b>[1 point]</b>. The initial state is 0 and the initial Q-function is 0 for all state-action pairs.  Explain the impact of the exploration probability epsilon on the cumulative discounted rewards per episode earned during training as well as the resulting Q-values and policy. <b>[1 point]</b></li>
+	</ul>
+
+	<h3>Part III [3 points]</h3>
+
+	<p>In the third part, you will train a deep Q-network to solve the CartPole problem from Open AI Gym.  This problem has continuous states that prevent the use of a tabular representation.  Instead, you will use a neural network to represent the Q-function.  Follow these steps to get started:</p>
+
+	<ul>
+	  <li>Get familiar with the CartPole problem.  Read a brief <a href="https://gym.openai.com/envs/CartPole-v1/">description of the CartPole problem from Open AI Gym</a>.</li>
+	  <li>For this part of the assignment, you will use the <a href="https://pytorch.org/">PyTorch library</a>. To get started, follow the <a href="https://pytorch.org/get-started/locally/">instructions to install PyTorch</a> and then. go through a <a href="https://pytorch.org/tutorials/beginner/basics/intro.html">tutorial about the basics of PyTorch</a>.</li>
+	  <li>Run the following code to solve the CartPole problem with a Deep Q-Network: 
+	    <ul>
+	      <li><a href="assignments/asst1/cs885_a1_part3_code.zip">cs885_a1_part3_code.zip</a></li>
+	    </ul>
+	  </li>
+	</ul>
+
+	
+	<p><b>Submit the following material via LEARN:</b></p>
+	<ul>
+	  <li>Modify the DQN code provided to produce a graph where the y-axis is the average cumulative reward of the last 25 episodes and the x-axis is the # of episodes up to 300 episodes. The graph should contain 4 curves corresponding to updating the target network every 1, 10 (default), 50, 100 episode(s). To reduce stochasticity in the results, report curves that are the average of 5 runs corresponding to 5 random seeds <b>[1 point]</b>.  Based on the results, explain the impact of the target network and relate the target network to value iteration. <b>[1 point]</b></li> 
+	  <li>Modify the DQN code provided to produce a graph where the y-axis is the average cumulative reward of the last 25 episodes and the x-axis is the # of episodes up to 300 episodes. The graph should contain 4 curves corresponding to sampling mini-batches of 1, 10 (default), 50 and 100 experience(s) from the replay buffer. To reduce stochasticity in the results, report curves that are the average of 5 runs corresponding to 5 random seeds. Based on the results, explain the impact of the replay buffer and relate the replay buffer to exact gradient descent. <b>[1 point]</b></li> 
+	</ul>
+
+	<h2>Assignment 2: out January 24, <b>due February 4 (11:59 pm)</b></h2>
+
+	<p>This assignment has two parts. <b>[10 points total + 1 bonus point]</b></p>
+
+	<h3>Part I [5 points]</h3>
+
+	<p> In the first part, you will program three bandit algorithms (epsilon-greedy, Thompson sampling and UCB) and one RL algorithms (model-based RL) in Python.  More specifically, fill in the functions in the skeleton code of the file RL2.py.   This file requires the file MDP.py that you programmed in Assignment 1 so make sure to include it in the same directory.  The file TestRL2.py contains a simple bandit and a simple RL problem to test your functions (i.e., the output of each function will be printed to the screen).   You can verify that your code compiles properly by running "python TestRL2.py".</p>
+
+	<ul>
+	  <li>Skeleton code: <a href="assignments/asst2/RL2.py">RL2.py</a> (requires MDP.py from assignment 1)</li>
+	  <li>Simple RL problem to test your code: <a href="assignments/asst2/TestRL2.py">TestRL2.py<a></li>
+	</ul>
+
+	<p><b>Submit the following material via LEARN:</b></p>
+	<ul>
+	  <li>Your Python code.</li>
+	  <li>Test your code for model-based RL with the maze problem described in <a href="assignments/asst2/TestRL2Maze.py">TestRL2Maze.py</a> (same maze problem as in Assignment 1).  Produce a graph where the x-axis indicates the episode # (from 0 to 200) and the y-axis indicates the average (based on 100 trials) of the cumulative discounted rewards per episode (100 steps) when each episode starts in state 0.  The graph should contain 2 curves corresponding to 
+	    <ul>
+	      <li>Model-based RL (epsilon=0.05, the default transition function is uniform when a state-action pair has not been visited and the initial expected reward is 0 for all state-action pairs) <b>[1 point]</b></li>
+	      <li>Q-learning (epsilon=0.05 and the initial Q-function is 0 for all state-action pairs)</li>
+	    </ul>
+	  Explain the results.  Discuss how different properties of each algorithm influence the cumulative discounted rewards per episode earned during training as well as the resulting Q-values and policy. <b>[1 point]</b></li>
+	  <li>Test your code for UCB, epsilon-greedy bandit and Thompson sampling with the simple multi-armed bandit problem described in <a href="assignments/asst2/TestBandit.py">TestBandit.py</a>.  Produce a graph where the x-axis indicates the iteration # (from 0 to 200) and the y-axis indicates the average (based on 1000 trials) of the reward earned at each iteration.  The graph should contain 3 curves corresponding to 
+	    <ul>
+	      <li>UCB <b>[0.5 point]</b></li>
+	      <li>Epsilon-greedy bandit (epsilon = 1 / # iterations) <b>[0.5 point]</b></li>
+	      <li>Thompson sampling (k=1 and prior consists of Beta distributions with all hyper parameters set to 1) <b>[1 point]</b></li>
+	    </ul>
+	  Explain the results.  Are the results surprising?  Do they match what is expected based on the theory? <b>[1 point]</b></li>
+	</ul> 
+
+	<h3>Part II [5 points + 1 bonus point]</h3>
+
+	<p>In the second part of the assignment, you will program the REINFORCE algorithm with a baseline and the Proximal Policy Optimization (PPO) algorithm.  Use the following starter code. The complete REINFORCE algorithm is provided.  Fill-in the train function for REINFORCE with baseline and PPO.  You will test your code on the cartpole problem (same as assignment 1), mountain-car problem and a modified version of the mountain-car problem.</p>
+	<ul>
+	  <li><a href="assignments/asst2/a2_part2_starter.zip">a2_part2_starter.zip</a> (revised Jan 25)</li>
+	</ul>
+
+	<p><b>Submit the following material via LEARN:</b></p>
+	<ul>
+	  <li>Your Python code.</li>
+	  <li>Produce 3 graphs that show the performance of REINFORCE, REINFORCE with baseline and PPO on the cartpole problem.  Running "python REINFORCE.py --mode=cartpole" produces the graph for REINFORCE which is saved in the "images" directory.  For each graph, the y axis corresponds to the cumulative rewards (averaged over the last 25 episodes) and the x axis is the number of episodes (up to 800 for REINFORCE and REINFORCE with baseline, and up to 150 for PPO). <b>[2 points]</b> Explain the results based on the properties of each algorithm <b>[1 point]</b>. 	 (Optional) What happens if you change POLICY_TRAIN_ITERS from 1 to 10 in REINFORCE with baseline?  Explain your observations. <b>[1 bonus point]</b></li>
+</li>
+	  <li>Produce 3 graphs that show the performance of REINFORCE, REINFORCE with baseline and PPO on the mountain-car problem.  Read a brief <a href="https://gym.openai.com/envs/MountainCar-v0/">description of the Mountain-Car problem from Open AI Gym</a>. The goal is to move a car up a mountain. The mountain-car environment has a reward as follows: each time step it gives a reward of -1, until the goal is reached (at a certain height of the mountain where the reward is 0) or the episode reaches termination (in 200 steps). Running "python REINFORCE.py --mode=mountain_car" produces the graph for REINFORCE which is saved in the "images" directory.  For each graph, the y axis corresponds to the cumulative rewards (averaged over the last 25 episodes) and the x axis is the number of episodes. What do you notice about the performance of the algorithms on mountain-car versus  cartpole?  What is a possible explanation for the performance differences in terms of the details of the environments? <b>[1 point]</b></li>
+	  <li>Produce 3 graphs that show the performance of REINFORCE, REINFORCE with baseline and PPO on a modified version of the mountain problem.  This environment is the same as plain mountain-car, except that the reward function is changed so that the reward at each time step is the height of the car. The goal is the same as plain mountain-car (i.e., to reach the top of the mountain). Running "python REINFORCE.py --mode=mountain_car_mod" produces the graph for REINFORCE which is saved in the "images" directory.  For each graph, the y axis corresponds to the cumulative rewards (averaged over the last 25 episodes) and the x axis is the number of episodes. Compare the performances of the algorithms for mountain-car versus the modified mountain-car.  Specifically, compare the reward curves and the final height achieved by the agents.  Explain your observations. <b>[1 point]</b></li>
+
+	</ul> 
+
+	<h2>Assignment 3: out February 7, <b>due February 18 (11:59 pm)</b></h2>
+
+	<p>This assignment has two parts. <b>[10 points total]</b></p>
+
+	<h3>Part I - Partially Observable RL [5 points]</h3>
+
+	<p> Starter code: <a href="assignments/asst3/a3_part1_starter_code.zip">a3_part1_starter_code.zip</a> </p>
+
+	<p> In this part, you will implement the Deep Recurrent Q learning (DRQN) algorithm. You will test your implementation on a modified version of the Cartpole domain. The Cartpole environment will be a POMDP where the agent will receive only a partial state (observation) of the environment instead of the full state. Start by downloading and running the implementation of DQN in Pytorch in the Cartpole domain. You should run the <tt>DQN.py</tt> file in the starter code. Implement the DRQN algorithm by filling the functions in the template code provided in the file <tt>DRQN.py</tt>. You will need to modify the model specification in <tt>DRQN.py</tt>. Note that for this assignment, you are supposed to use the partially observable environment API provided, which returns the partial state (observation) at each time step. You should not change this API to obtain the full state.</p> 
+
+	<ul>
+
+	  <li> Produce a graph that shows the performance of DQN on the Cartpole domain with epsilon greedy exploration (annealed). This will serve as a baseline to compare DRQN. Run the given code without any modification and plot a graph where the x-axis is the number of episodes (2000 episodes) and the y-axis is the reward obtained. You can use a running average to smooth the plot if you so desire. Report curves that are the average of multiple runs of DQN (with different random seeds). </li>
+
+	  <li> <b>(1 point)</b> Implement the DRQN model using an LSTM. </li>
+
+	  <li> <b>(1 point)</b> Adjust the replay buffer specification, policy function and (optionally) utility functions to handle hidden states.</li>
+
+	  <li> <b>(1 point)</b> Implement update_networks function in the <tt>DRQN.py</tt> file. </li> 
+
+	  <li> <b>(1 point)</b> Produce a graph that shows the performance of the LSTM based DRQN on the Cartpole domain. Similar to the DQN case, the x-axis is the number of episodes (2000 episodes) and the y-axis is the reward obtained. You can use a running average to smooth the plot if you so desire. Report curves that are the average of multiple runs of DRQN (with different random seeds). </li>
+	</ul>
+
+	<li> <b>(1 point)</b> Based on the results explain the impact of the LSTM layer. Compare the performance of using DRQN and DQN. Elucidate the reasons for the observed difference in performance. </li>
+
+	<p><b>Submit the following material via LEARN:</b></p>
+
+	<ul>
+	  <li> Your implementation of DRQN, which will be the modified version of the <tt>DRQN.py</tt> file. </li>
+	  <li> A report containing the plots pertaining to the DQN and DRQN with your explanation of the results. </li>
+	</ul>
+    
+	<h3>Part II - Distributional RL [5 points]</h3>
+
+	<p> Starter code: <a href="assignments/asst3/a3_part2_starter_code.zip">a3_part2_starter_code.zip</a> </p>
+
+	<p> In this part, you will program the categorical (C51) distributional RL algorithm. The environment will be a modified version of the Cartpole domain. In this domain a noise sampled uniformly at random in the range (-0.05, 0.05) is included with the magnitude of the force applied to the pole every time an action is taken. In addition, the cart and the surface have a constant friction of 5 x 10-4 units and the pole has an air drag (friction) of 2 x 10-6 units. These changes turn the deterministic Cartpole environment into a stochastic environment. Start by downloading and running the provided implementation of DQN in Cartpole (run the <tt>DQN.py</tt> file). Now implement the C51 algorithm by modifying the functions in the <tt>C51.py</tt> file in the C51 folder. </p>
+
+	<ul>
+
+	  <li>Produce a graph that shows the performance of the given implementation of DQN on the Cartpole domain with epsilon greedy exploration (annealed). This will serve as a baseline to compare performance of the C51 algorithm. Run the given code without any modification and plot a graph where the x-axis is the number of episodes (at least 200 episodes) and the y-axis is the reward obtained per episode. You can use a running average to smooth the plot if you so desire. Report curves that are the average of multiple runs of the DQN (with different random seeds).</li>
+
+	  <li> <b>(2 points)</b> Implement the C51 algorithm by modifying the <tt>C51.py</tt> file. You will need to implement <tt>update_networks</tt>.</li>
+
+	  <li><b>(1 point)</b> Adjust the policy function to use the Z network.</li>
+
+	  <li><b>(1 point)</b> Produce a graph that shows the performance of the C51 algorithm on the Cartpole domain. Similar to the DQN case, the x-axis is the number of episodes (500 episodes) and the y-axis is the reward obtained per episode. You can use a running average to smooth the plot if you so desire. Report curves that are the average of multiple runs of C51 (with different random seeds).</li> 
+
+	  <li><b>(1 point)</b> Based on the results, comment on the differences in the performance of C51 and DQN. What do the results suggest about the respective algorithms?</li>
+	</ul>
+
+	<p><b>Submit the following material via LEARN:</b></p>
+
+	<ul>
+	  <li>Your implementation of C51, which will be a modified version of the <tt>C51.py</tt>.</li>
+	  <li>A report containing the plots pertaining to C51 and DQN with your explanation of the results.</li>
+	</ul>
+
+      </div>
+    </div>
+
+<script>
+function w3_open() {
+    document.getElementById("mySidebar").style.display = "block";
+}
+
+function w3_close() {
+    document.getElementById("mySidebar").style.display = "none";
+}
+
+</script>
+  </body>
+</html>
