@@ -1,5 +1,5 @@
 import numpy as np
-import Assignment_1.MDP as MDP
+from Assignment_1 import MDP
 
 class RL2:
     def __init__(self,mdp,sampleReward):
@@ -35,184 +35,210 @@ class RL2:
         return [reward,nextState]
 
     def modelBasedRL(self,s0,defaultT,initialR,nEpisodes,nSteps,epsilon=0):
-        '''Model-based RL with epsilon-greedy exploration; updates policy via DP each step.
+        '''Model-based Reinforcement Learning with epsilon greedy 
+        exploration.  This function should use value iteration,
+        policy iteration or modified policy iteration to update the policy at each step
 
         Inputs:
         s0 -- initial state
-        defaultT -- default transition when (s,a) not visited (|A|x|S|x|S|)
-        initialR -- initial reward estimate (|A|x|S|)
-        nEpisodes -- # episodes
-        nSteps -- # steps per episode
-        epsilon -- exploration prob
+        defaultT -- default transition function when a state-action pair has not been vsited
+        initialR -- initial estimate of the reward function
+        nEpisodes -- # of episodes (one episode consists of a trajectory of nSteps that starts in s0
+        nSteps -- # of steps per episode
+        epsilon -- probability with which an action is chosen at random
 
-        Outputs:
+        Outputs: 
         V -- final value function
         policy -- final policy
         '''
-
-        nA = self.mdp.nActions
         nS = self.mdp.nStates
-        gamma = self.mdp.discount
+        nA = self.mdp.nActions
 
-        T_counts = np.zeros((nA, nS, nS))
-        SA_counts = np.zeros((nA, nS))
-        R_sums = np.zeros((nA, nS))
+        # Empirical model estimates
+        Ns = np.zeros((nA, nS), dtype=int)            # N(s,a)
+        Nss = np.zeros((nA, nS, nS), dtype=int)       # N(s,a,s')
+        Rhat = initialR.copy().astype(float)          # mean reward estimate per (a,s)
 
-        T_hat = defaultT.astype(float).copy()
-        R_hat = initialR.astype(float).copy()
+        # Helper to build estimated MDP from counts and defaults
+        def build_estimated_mdp():
+            Test = np.zeros((nA, nS, nS))
+            Rest = np.zeros((nA, nS))
+            for a in range(nA):
+                for s in range(nS):
+                    if Ns[a, s] > 0:
+                        Test[a, s, :] = Nss[a, s, :] / max(1, Ns[a, s])
+                        Rest[a, s] = Rhat[a, s]
+                    else:
+                        Test[a, s, :] = defaultT[a, s, :]
+                        Rest[a, s] = initialR[a, s]
+            return Test, Rest
 
-        V_hat = np.zeros(nS)
-        policy_hat = np.zeros(nS, dtype=int)
+        # Initialize policy/value using defaults
+        Test, Rest = build_estimated_mdp()
+        est_mdp = MDP.MDP(Test, Rest, self.mdp.discount)
+        V, _, _ = est_mdp.valueIteration(initialV=np.zeros(nS), nIterations=1000, tolerance=1e-6)
+        policy = est_mdp.extractPolicy(V)
 
+        # Run episodes and update model online
         for _ in range(nEpisodes):
             s = s0
-            for _ in range(nSteps):
-                # Plan on current model
-                model = MDP.MDP(T_hat, R_hat, gamma)
-                V_hat, _, _ = model.valueIteration(initialV=V_hat, nIterations=100, tolerance=1e-6)
-                policy_hat = model.extractPolicy(V_hat)
-
-                # Epsilon-greedy action
+            for _t in range(nSteps):
+                # epsilon-greedy action w.r.t current policy
                 if np.random.rand() < epsilon:
                     a = np.random.randint(nA)
                 else:
-                    a = int(policy_hat[s])
+                    a = int(policy[s])
 
-                # Interact with true env
-                r, s_next = self.sampleRewardAndNextState(s, a)
+                r, sp = self.sampleRewardAndNextState(s, a)
 
-                # Update counts and estimates
-                SA_counts[a, s] += 1.0
-                R_sums[a, s] += r
-                T_counts[a, s, s_next] += 1.0
+                # Update counts and reward mean for (a,s)
+                Ns[a, s] += 1
+                Nss[a, s, sp] += 1
+                # incremental mean
+                Rhat[a, s] += (r - Rhat[a, s]) / Ns[a, s]
 
-                # Update R_hat
-                R_hat[a, s] = R_sums[a, s] / SA_counts[a, s]
+                # Rebuild estimated MDP and re-plan
+                Test, Rest = build_estimated_mdp()
+                est_mdp = MDP.MDP(Test, Rest, self.mdp.discount)
+                V, _, _ = est_mdp.valueIteration(initialV=V, nIterations=100, tolerance=1e-4)
+                policy = est_mdp.extractPolicy(V)
 
-                # Update T_hat for (a,s)
-                T_hat[a, s, :] = defaultT[a, s, :]  # fallback
-                if SA_counts[a, s] > 0:
-                    T_hat[a, s, :] = T_counts[a, s, :] / SA_counts[a, s]
+                s = sp
 
-                s = s_next
-
-        # Final planning
-        model = MDP.MDP(T_hat, R_hat, gamma)
-        V_hat, _, _ = model.valueIteration(initialV=V_hat, nIterations=1000, tolerance=1e-8)
-        policy_hat = model.extractPolicy(V_hat)
-
-        return [V_hat, policy_hat]    
+        return [V,policy]    
 
     def epsilonGreedyBandit(self,nIterations):
-        '''Epsilon-greedy for bandits. Use epsilon_t = 1 / t.
+        '''Epsilon greedy algorithm for bandits (assume no discount factor).  Use epsilon = 1 / # of iterations.
 
         Inputs:
-        nIterations -- # pulls
+        nIterations -- # of arms that are pulled
 
-        Outputs:
-        empiricalMeans -- mean reward per arm (|A|)
+        Outputs: 
+        empiricalMeans -- empirical average of rewards for each arm (array of |A| entries)
         '''
-
         nA = self.mdp.nActions
-        state = 0  # single-state bandit
-        counts = np.zeros(nA)
-        sums = np.zeros(nA)
-        means = np.zeros(nA)
+        # For bandit, single state assumed
+        counts = np.zeros(nA, dtype=int)
+        sums = np.zeros(nA, dtype=float)
 
         for t in range(1, nIterations + 1):
             eps = 1.0 / t
             if np.random.rand() < eps:
                 a = np.random.randint(nA)
             else:
-                # Break ties randomly
-                best = np.where(means == means.max())[0]
-                a = int(np.random.choice(best))
-            r = self.sampleReward(self.mdp.R[a, state])
-            counts[a] += 1.0
+                # choose best empirical mean; tie-break uniformly
+                means = np.divide(sums, np.maximum(1, counts))
+                max_val = np.max(means)
+                candidates = np.where(means == max_val)[0]
+                a = int(np.random.choice(candidates))
+
+            r = self.sampleReward(self.mdp.R[a, 0])
+            counts[a] += 1
             sums[a] += r
-            means[a] = sums[a] / counts[a]
-        return means
+
+        empiricalMeans = np.divide(sums, np.maximum(1, counts))
+        return empiricalMeans
 
     def thompsonSamplingBandit(self,prior,nIterations,k=1):
-        '''Thompson sampling for Bernoulli bandits.
+        '''Thompson sampling algorithm for Bernoulli bandits (assume no discount factor)
 
         Inputs:
-        prior -- Beta prior per arm (|A|x2): [alpha, beta]
-        nIterations -- # pulls
-        k -- # samples per arm (average these k samples)
-
-        Outputs:
-        empiricalMeans -- mean reward per arm (|A|)
-        '''
-
-        nA = self.mdp.nActions
-        state = 0
-        alpha_beta = prior.astype(float).copy()  # shape (nA,2)
-        counts = np.zeros(nA)
-        sums = np.zeros(nA)
-        means = np.zeros(nA)
-
-        for _ in range(nIterations):
-            samples = np.zeros(nA)
-            for a in range(nA):
-                draws = np.random.beta(alpha_beta[a,0], alpha_beta[a,1], size=int(k))
-                samples[a] = draws.mean()
-            # Choose arm
-            best = np.where(samples == samples.max())[0]
-            a = int(np.random.choice(best))
-            # Observe reward
-            r = self.sampleReward(self.mdp.R[a, state])
-            # Update posterior
-            alpha_beta[a,0] += r
-            alpha_beta[a,1] += (1 - r)
-            # Track empirical means
-            counts[a] += 1.0
-            sums[a] += r
-            means[a] = sums[a] / counts[a]        
-        return means
-
-    def UCBbandit(self,nIterations):
-        '''UCB1 for bandits.
-
-        Inputs:
-        nIterations -- # pulls
+        prior -- initial beta distribution over the average reward of each arm (|A|x2 matrix such that prior[a,0] is the alpha hyperparameter for arm a and prior[a,1] is the beta hyperparameter for arm a)  
+        nIterations -- # of arms that are pulled
+        k -- # of sampled average rewards
 
         Outputs: 
-        empiricalMeans -- mean reward per arm (|A|)
+        empiricalMeans -- empirical average of rewards for each arm (array of |A| entries)
         '''
-
         nA = self.mdp.nActions
-        state = 0
-        counts = np.zeros(nA)
-        sums = np.zeros(nA)
-        means = np.zeros(nA)
+        alpha = prior[:, 0].astype(float).copy()
+        beta = prior[:, 1].astype(float).copy()
+        counts = np.zeros(nA, dtype=int)
+        sums = np.zeros(nA, dtype=float)
+
+        for _t in range(nIterations):
+            # sample k means for each arm and average them
+            samples = np.zeros(nA)
+            for a in range(nA):
+                draws = np.random.beta(alpha[a], beta[a], size=int(k))
+                samples[a] = np.mean(draws)
+            a_sel = int(np.argmax(samples))
+
+            r = self.sampleReward(self.mdp.R[a_sel, 0])
+            counts[a_sel] += 1
+            sums[a_sel] += r
+
+            # Beta-Bernoulli update
+            if r >= 1:  # for Bernoulli rewards in {0,1}
+                alpha[a_sel] += 1
+            else:
+                beta[a_sel] += 1
+
+        empiricalMeans = np.divide(sums, np.maximum(1, counts))
+        return empiricalMeans
+
+    def UCBbandit(self,nIterations):
+        '''Upper confidence bound algorithm for bandits (assume no discount factor)
+
+        Inputs:
+        nIterations -- # of arms that are pulled
+
+        Outputs: 
+        empiricalMeans -- empirical average of rewards for each arm (array of |A| entries)
+        '''
+        nA = self.mdp.nActions
+        counts = np.zeros(nA, dtype=int)
+        sums = np.zeros(nA, dtype=float)
 
         t = 0
-        # Initialize by pulling each arm once (if possible)
+        # initialize by pulling each arm once (if possible)
         for a in range(nA):
             if t >= nIterations:
                 break
-            r = self.sampleReward(self.mdp.R[a, state])
-            counts[a] += 1.0
+            r = self.sampleReward(self.mdp.R[a, 0])
+            counts[a] += 1
             sums[a] += r
-            means[a] = sums[a] / counts[a]
             t += 1
 
         while t < nIterations:
-            ucb = np.zeros(nA)
-            total = counts.sum() + 1e-12
-            for a in range(nA):
-                if counts[a] == 0:
-                    ucb[a] = np.inf
-                else:
-                    bonus = np.sqrt(2.0 * np.log(total) / counts[a])
-                    ucb[a] = means[a] + bonus
-            best = np.where(ucb == np.max(ucb))[0]
-            a = int(np.random.choice(best))
-            r = self.sampleReward(self.mdp.R[a, state])
-            counts[a] += 1.0
+            means = np.divide(sums, np.maximum(1, counts))
+            ucb = means + np.sqrt(2.0 * np.log(max(1, t)) / np.maximum(1, counts))
+            a = int(np.argmax(ucb))
+            r = self.sampleReward(self.mdp.R[a, 0])
+            counts[a] += 1
             sums[a] += r
-            means[a] = sums[a] / counts[a]
             t += 1
 
-        return means
+        empiricalMeans = np.divide(sums, np.maximum(1, counts))
+        return empiricalMeans
+
+    def qLearning(self, s0, initialQ, nEpisodes, nSteps, epsilon=0.05):
+        '''Q-learning with epsilon-greedy exploration and alpha = 1/N(s,a)'''
+        nS = self.mdp.nStates
+        nA = self.mdp.nActions
+        Q = initialQ.copy().astype(float)
+        Nsa = np.zeros((nA, nS), dtype=int)
+        gamma = self.mdp.discount
+
+        for _ in range(nEpisodes):
+            s = s0
+            for _t in range(nSteps):
+                if np.random.rand() < epsilon:
+                    a = np.random.randint(nA)
+                else:
+                    # greedy w.r.t Q
+                    q_s = Q[:, s]
+                    max_q = np.max(q_s)
+                    candidates = np.where(q_s == max_q)[0]
+                    a = int(np.random.choice(candidates))
+
+                r, sp = self.sampleRewardAndNextState(s, a)
+                Nsa[a, s] += 1
+                alpha = 1.0 / Nsa[a, s]
+                td_target = r + gamma * np.max(Q[:, sp])
+                Q[a, s] += alpha * (td_target - Q[a, s])
+                s = sp
+
+        # derive greedy policy from Q
+        policy = np.argmax(Q, axis=0).astype(int)
+        return [Q, policy]

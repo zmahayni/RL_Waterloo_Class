@@ -3,7 +3,7 @@ import os
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from Assignment_1 import MDP
-import RL2
+from Assignment_2 import RL2
 
 
 def sampleBernoulli(mean):
@@ -41,16 +41,3 @@ print(empiricalMeans)
 empiricalMeans = banditProblem.UCBbandit(nIterations=200)
 print("\nUCBbandit results")
 print(empiricalMeans)
-
-''' Construct simple MDP as described in Lecture 2a Slides 13-14'''
-T = np.array([[[0.5,0.5,0,0],[0,1,0,0],[0.5,0.5,0,0],[0,1,0,0]],[[1,0,0,0],[0.5,0,0,0.5],[0.5,0,0.5,0],[0,0,0.5,0.5]]])
-R = np.array([[0,0,10,10],[0,0,10,10]])
-discount = 0.9        
-mdp = MDP.MDP(T,R,discount)
-rlProblem = RL2.RL2(mdp,np.random.normal)
-
-# Test model-based RL
-[V,policy] = rlProblem.modelBasedRL(s0=0,defaultT=np.ones([mdp.nActions,mdp.nStates,mdp.nStates])/mdp.nStates,initialR=np.zeros([mdp.nActions,mdp.nStates]),nEpisodes=100,nSteps=100,epsilon=0.05)
-print("\nmodel-based RL results")
-print(V)
-print(policy)
