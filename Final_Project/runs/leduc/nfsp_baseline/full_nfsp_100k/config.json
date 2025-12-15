@@ -1,0 +1,22 @@
+{
+  "num_episodes": 100000,
+  "seed": 42,
+  "rl_batch_size": 32,
+  "sl_batch_size": 128,
+  "rl_lr": 0.001,
+  "sl_lr": 0.001,
+  "gamma": 0.99,
+  "hidden_size": 128,
+  "epsilon_start": 1.0,
+  "epsilon_end": 0.05,
+  "eta": 0.1,
+  "rl_buffer_size": 10000,
+  "sl_buffer_size": 100000,
+  "sl_update_every": 64,
+  "sl_updates_per_step": 1,
+  "eval_every": 2000,
+  "num_eval_episodes": 1000,
+  "checkpoint_every": 10000,
+  "run_name": "full_nfsp_100k",
+  "device": "cpu"
+}

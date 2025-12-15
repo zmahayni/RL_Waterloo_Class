@@ -1,0 +1,17 @@
+{
+  "num_episodes": 50000,
+  "seed": 42,
+  "batch_size": 32,
+  "lr": 0.0001,
+  "gamma": 0.99,
+  "hidden_size": 128,
+  "target_update_freq": 1000,
+  "epsilon_start": 1.0,
+  "epsilon_end": 0.05,
+  "eval_every": 2000,
+  "num_eval_episodes": 200,
+  "checkpoint_every": 5000,
+  "run_name": "baseline_50k",
+  "device": "cpu",
+  "plot_window": 200
+}

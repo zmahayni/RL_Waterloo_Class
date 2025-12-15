@@ -1,0 +1,4 @@
+pettingzoo[classic]==1.24.3
+gymnasium==0.29.1
+numpy==1.24.3
+torch==2.0.1

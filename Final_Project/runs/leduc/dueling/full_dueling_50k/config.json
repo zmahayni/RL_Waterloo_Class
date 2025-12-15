@@ -1,0 +1,15 @@
+{
+  "num_episodes": 50000,
+  "seed": 42,
+  "batch_size": 32,
+  "lr": 0.001,
+  "gamma": 0.99,
+  "hidden_size": 128,
+  "epsilon_start": 1.0,
+  "epsilon_end": 0.05,
+  "eval_every": 2000,
+  "num_eval_episodes": 1000,
+  "checkpoint_every": 10000,
+  "run_name": "full_dueling_50k",
+  "device": "cpu"
+}
